@@ -67,7 +67,7 @@ class SpotifyStatus
   end
 
   def load_dotenv
-    return unless File.exist?('.env')
+    return unless File.exist?('~/.env')
 
     dotenv_path = File.expand_path('.env', __dir__)
     File.readlines(dotenv_path).each do |line|
