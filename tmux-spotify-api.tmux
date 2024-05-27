@@ -31,8 +31,8 @@ replace_placeholder_in_status_line() {
 }
 
 main() {
-  local now_playing="cd "$CURRENT_DIR" && ./spotify.rb"
-  replace_placeholder_in_status_line "now_playing" "$now_playing" "status-right"
+  local now_playing="$CURRENT_DIR/spotify.rb"
+  replace_placeholder_in_status_line "spotify_now_playing" "$now_playing" "status-right"
 }
 
 main
