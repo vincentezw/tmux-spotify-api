@@ -20,7 +20,9 @@ class SpotifyStatus
   end
 
   def now_playing
-    authorize unless File.exist?('credentials')
+    script_dir = File.dirname(__FILE__)
+    credentials_path = File.join(script_dir, 'credentials')
+    authorize unless File.exist?(credentials_path)
     access_token = read_credentials
 
     uri = URI('https://api.spotify.com/v1/me/player/currently-playing')
@@ -67,10 +69,10 @@ class SpotifyStatus
   end
 
   def load_dotenv
-    return unless File.exist?('.env')
+    home_dotenv_path = File.expand_path('~/.env')
+    return unless File.exist?(home_dotenv_path)
 
-    dotenv_path = File.expand_path('.env', __dir__)
-    File.readlines(dotenv_path).each do |line|
+    File.readlines(home_dotenv_path).each do |line|
       key, value = line.strip.split('=')
       ENV[key] = value if key && value
     end
@@ -107,9 +109,11 @@ class SpotifyStatus
   end
 
   def read_credentials
-    data = JSON.parse(File.read('credentials'))
+    script_dir = File.dirname(__FILE__)
+    credentials_path = File.join(script_dir, 'credentials')
+    data = JSON.parse(File.read(credentials_path))
     expires_in = data['expires_in']
-    token_file_last_modified = File.mtime('credentials')
+    token_file_last_modified = File.mtime(credentials_path)
 
     expiry_time = token_file_last_modified + expires_in
     if Time.now >= expiry_time
@@ -138,7 +142,9 @@ class SpotifyStatus
 
     raise "Error: #{response.code}" unless response.code == '200'
 
-    File.open('credentials', 'w') do |file|
+    script_dir = File.dirname(__FILE__)
+    credentials_path = File.join(script_dir, 'credentials')
+    File.open(credentials_path, 'w') do |file|
       file.puts(response.body)
     end
   end
