@@ -101,7 +101,9 @@ class SpotifyStatus
       data["refresh_token"] = refresh_token
     end
       
-    File.open("credentials", "w") do |file|
+    script_dir = File.dirname(__FILE__)
+    credentials_path = File.join(script_dir, 'credentials')
+    File.open(credentials_path, "w") do |file|
       file.puts(JSON.dump(data))
     end
 
